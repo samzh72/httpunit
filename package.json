@@ -1,5 +1,5 @@
 {
-  "name": "httpunit",
+  "name": "@samzh72/httpunit",
   "version": "1.0.0",
   "description": "programable http server for micro-service unit testing",
   "main": "src/index.js",

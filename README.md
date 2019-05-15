@@ -29,7 +29,7 @@ As well, everything is programmable.
 ## Installing 
 
 ```
-npm install -D httpunit
+npm install -D @samzh72/httpunit
 ```
 
 Launching server:
