@@ -91,11 +91,9 @@ Request:
 | ----------------- | ------ |
 | /server/:serverId | DELETE |
 
+No body in response, status code indicates result of the API call.
 
-Response:
-none
-
-### install route handler
+### Install route handler
 
 Define the behavior of mock server for the specific route. 
 
@@ -155,6 +153,8 @@ Request body:
 | path     | yes      | default to '/'                                                                                          |
 | secure   | yes      | true to be used with HTTPS only                                                                         |
 | sameSite | yes      | 'strict' or 'lax'                                                                                       |
+
+No body in response, status code indicates result of the API call.
 ## Proxy APIs
 
 TBD
