@@ -11,6 +11,7 @@
     const REQUEST_TIMEOUT = 5 * 1000;
     const RESPONSE_BODY_STRING = 'body string to be verified';
     const RESPONSE_BODY_OBJECT = { text: 'body object to be verified' };
+    const RESPONSE_BODY_STRING_BIG = 'big body string to be compressed.big body string to be compressed.big body string to be compressed.big body string to be compressed.big body string to be compressed.big body string to be compressed.big body string to be compressed.big body string to be compressed.big body string to be compressed.big body string to be compressed.big body string to be compressed.big body string to be compressed.big body string to be compressed.big body string to be compressed.big body string to be compressed.big body string to be compressed.big body string to be compressed.big body string to be compressed.big body string to be compressed.big body string to be compressed.big body string to be compressed.big body string to be compressed.big body string to be compressed.big body string to be compressed.big body string to be compressed.big body string to be compressed.big body string to be compressed.big body string to be compressed.big body string to be compressed.big body string to be compressed.big body string to be compressed.big body string to be compressed.';
     const RESPONSE_HEADERS = { // keep header field in lower case because express will return like that
         'server': 'httpunit',
         'x-my-header': 'My-Header-Value'
@@ -61,7 +62,10 @@
                     .request({
                         url: `http://localhost:${SERVER_PORT}${requestPath}`,
                         method: 'get',
-                        validateStatus: null,
+                        headers: {  // tell server client support compression.
+                            "Accept-Encoding": "gzip, deflate, br"
+                        },
+                        validateStatus: null, // all status go to .then() instead of .catch()
                         timeout: REQUEST_TIMEOUT
                     });
             })
@@ -268,6 +272,26 @@
             }, res => {
                 assert(res.status == testStatus);
                 assert(JSON.stringify(res.data) == JSON.stringify(RESPONSE_BODY_OBJECT));
+                done();
+            }, err => {
+                done(err);
+            })
+        })
+
+        it('set handler - with compressed response', done => {
+            let routePath = '/normal/:abc';
+            let requestPath = '/normal/abc';
+            let testStatus = 201;
+
+            testHandler(routePath, 'GET', requestPath, {
+                status: testStatus,
+                body: RESPONSE_BODY_STRING_BIG
+            }, res => {
+                assert(res.status == testStatus);
+                assert(res.headers['transfer-encoding'] == 'chunked');
+                // axios will decompress automatically if 'content-type' is 'gzip'
+                // res.data is always plain text
+                assert(res.data == RESPONSE_BODY_STRING_BIG);
                 done();
             }, err => {
                 done(err);

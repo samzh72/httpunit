@@ -11,18 +11,19 @@
         logger.configure(options.logOptions);
         logger.info('httpunit: programable http server');
 
-        let app = express();
-
-        app.use(bodyParser.json({ limit: '50mb' }));
-        app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
-
         if (options.mockOptions) {
+            let app = express();
+            app.use(bodyParser.json({ limit: '50mb' }));
+            app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
             mock.serve(app);
             mockServer = app.listen(options.mockOptions.port, options.mockOptions.host);
             logger.info('mock server listen on:' + options.mockOptions.port);
         }
 
         if (options.proxyOptions) {
+            let app = express();
+            app.use(bodyParser.json({ limit: '50mb' }));
+            app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
             proxy.serve(app);
             proxyServer = app.listen(options.proxyOptions.port, options.proxyOptions.host);
             logger.info('proxy server listen on:' + options.proxyOptions.port);

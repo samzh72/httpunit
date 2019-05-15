@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/samzh72/httpunit#readme",
   "dependencies": {
+    "compression": "^1.7.4",
     "config": "^3.1.0",
     "cookie-parser": "^1.4.4",
     "express": "^4.16.4",

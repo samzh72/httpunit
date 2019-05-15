@@ -3,6 +3,7 @@
     let router = require('./router');
     const logger = require('../logger').create(__filename);
     let cookieParser = require('cookie-parser');
+    var compression = require('compression')
 
     /**
      * array of server configs
@@ -30,8 +31,10 @@
             let serverId = Math.floor(Math.random() * 90000000) + 10000000;
 
             let mock = express();
+            mock.use(compression());
             mock.use(cookieParser('secret'));
             mock.use(router.handle(serverId));
+            mock.disable('x-powered-by');
             let server = mock.listen(req.body.port, req.body.host);
 
             servers.push({ server: server, serverId: serverId });
