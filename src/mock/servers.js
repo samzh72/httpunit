@@ -13,20 +13,6 @@
      */
     let servers = [];
 
-    /*
-     * create a server
-     * request body: 
-     * {
-     *      port: 9000,             // where the new server listen on
-     *      host: '192.168.1.1',    // optional, default would be 0.0.0.0
-     * }
-     * 
-     * response body:
-     * {
-     *      serverId: '12345678',       // random number
-     * }
-     * serverId would be used in further API calls like setHandler()
-     */
     function createServerApi(app) {
         app.post('/server', (req, res) => {
             if (req.body == null) {
