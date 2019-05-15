@@ -1,0 +1,11 @@
+{
+    "logOptions": {
+        "level": "off"
+    },
+    "mockOptions": {
+        "port": 8000
+    },
+    "proxyOptions": {
+        "port": 8001
+    }
+}

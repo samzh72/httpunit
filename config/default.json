@@ -1,0 +1,11 @@
+{
+    "logOptions": {
+        "logfile": "./log/httpunit.log"
+    },
+    "mockOptions": {
+        "port": 8000
+    },
+    "proxyOptions": {
+        "port": 8001
+    }
+}

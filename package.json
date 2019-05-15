@@ -1,0 +1,34 @@
+{
+  "name": "httpunit",
+  "version": "1.0.0",
+  "description": "programable http server for micro-service unit testing",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/httpunit.js",
+    "test": "NODE_ENV=testing mocha --timeout 100000 --colors --recursive --require mocha-steps"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samzh72/httpunit.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/samzh72/httpunit/issues"
+  },
+  "homepage": "https://github.com/samzh72/httpunit#readme",
+  "dependencies": {
+    "config": "^3.1.0",
+    "cookie-parser": "^1.4.4",
+    "express": "^4.16.4",
+    "log4js": "^4.1.1",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "axios": "^0.18.0",
+    "cookie": "^0.3.1",
+    "mocha": "^6.1.4",
+    "mocha-steps": "^1.3.0"
+  }
+}
