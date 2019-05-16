@@ -11,8 +11,21 @@
     "type": "git",
     "url": "git+https://github.com/samzh72/httpunit.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "httpunit",
+    "http",
+    "unit test",
+    "http server",
+    "programable http server",
+    "microservice",
+    "micro-service",
+    "micro service",
+    "http mock",
+    "http mocking",
+    "api mock",
+    "api mocking"
+  ],
+  "author": "Sam Zhang",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/samzh72/httpunit/issues"
