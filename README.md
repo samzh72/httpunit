@@ -45,6 +45,8 @@ hu.serve({
 });
 ```
 
+Both mockOptions and proxyOptions are optional. Mock mode or proxy mode will be launched only when the option specified.
+
 ## Mock APIs
 
 httpunit provides very simple APIs to create, delete mock servers and set handlers for testing routes.
@@ -54,6 +56,7 @@ httpunit provides very simple APIs to create, delete mock servers and set handle
 A mock server will be created on a specified port and bind to a specified IP. But there're no route handlers installed for this server yet. Any requests to this server will get HTTP 404 response.
 
 Request:
+
 | path    | method |
 | ------- | ------ |
 | /server | POST   |
@@ -98,6 +101,7 @@ No body in response, status code indicates result of the API call.
 Define the behavior of mock server for the specific route. 
 
 Request:
+
 | path               | method |
 | ------------------ | ------ |
 | /:serverId/handler | PUT    |
@@ -131,6 +135,7 @@ Request body:
     }
 }
 ```
+
 | field    | optional | comments                                                                                                |
 | -------- | -------- | ------------------------------------------------------------------------------------------------------- |
 | path     | no       | route path to be installed, string starts with '/'                                                      |
