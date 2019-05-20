@@ -40,4 +40,8 @@
             proxy.close();
         }
     }
+
+    module.exports.createServer = mock.createServer;
+    module.exports.deleteServer = mock.deleteServer;
+    module.exports.installHandler = mock.installHandler;
 }())
