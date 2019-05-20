@@ -2,7 +2,7 @@
     const assert = require('assert');
     const rp = require('request-promise');
     const config = require('config');
-    const mock = require('../../src/mock');
+    const hu = require('../../src');
 
     const mockPort = config.mockOptions.port;
     const SERVER_PORT = 9000;
@@ -44,7 +44,7 @@
     ]
 
     function testHandler(routePath, method, requestPath, response, verifyRes, verifyErr) {
-        mock.installHandler(mockPort, 'localhost', serverId, {
+        hu.mockInstallHandler(serverId, {
             path: routePath,
             method: method,
             response: response
@@ -73,7 +73,7 @@
 
     describe('handler API', () => {
         before(done => {
-            mock.createServer(mockPort, 'localhost', SERVER_PORT)
+            hu.mockCreateServer(SERVER_PORT)
                 .then(sid => {
                     serverId = sid;
                     assert(serverId);
@@ -86,7 +86,7 @@
         });
 
         after(done => {
-            mock.deleteServer(mockPort, 'localhost', serverId)
+            hu.mockDeleteServer(serverId)
                 .then(() => {
                     done();
                 })
