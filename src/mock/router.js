@@ -55,7 +55,7 @@
         }
 
         return function (req, res, next) {
-            logger.debug('request comming on server:' + serverId + ' with url:' + req.url);
+            logger.debug('request coming on server:' + serverId + ' with url:' + req.url);
 
             // find a specified route
             let route;

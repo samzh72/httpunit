@@ -1,8 +1,8 @@
 (function () {
     const assert = require('assert');
-    const axios = require('axios');
+    const rp = require('request-promise');
     const config = require('config');
-    let cookie = require('cookie');
+    const mock = require('../../src/mock');
 
     const mockPort = config.mockOptions.port;
     const SERVER_PORT = 9000;
@@ -44,30 +44,24 @@
     ]
 
     function testHandler(routePath, method, requestPath, response, verifyRes, verifyErr) {
-        axios
-            .request({
-                url: `http://localhost:${mockPort}/${serverId}/handler`,
-                method: 'put',
-                data: {
-                    path: routePath,
-                    method: method,
-                    response: response
-                }
-            })
-            .then(res => {
-                assert(res.status == 200);
-
-                // issue request to mock server
-                return axios
-                    .request({
-                        url: `http://localhost:${SERVER_PORT}${requestPath}`,
-                        method: 'get',
-                        headers: {  // tell server client support compression.
-                            "Accept-Encoding": "gzip, deflate, br"
-                        },
-                        validateStatus: null, // all status go to .then() instead of .catch()
-                        timeout: REQUEST_TIMEOUT
-                    });
+        mock.installHandler(mockPort, 'localhost', serverId, {
+            path: routePath,
+            method: method,
+            response: response
+        })
+            .then(() => {
+                return rp({
+                    url: `http://localhost:${SERVER_PORT}${requestPath}`,
+                    method: 'GET',
+                    headers: {  // tell server client support compression.
+                        "accept-encoding": "gzip, deflate, br"
+                    },
+                    timeout: REQUEST_TIMEOUT,
+                    resolveWithFullResponse: true,
+                    simple: false,
+                    json: true,
+                    gzip: true
+                })
             })
             .then(res => {
                 verifyRes(res);
@@ -79,15 +73,9 @@
 
     describe('handler API', () => {
         before(done => {
-            axios
-                .request({
-                    url: `http://localhost:${mockPort}/server`,
-                    method: 'post',
-                    data: { port: SERVER_PORT }
-                })
-                .then(res => {
-                    assert(res.status == 200);
-                    serverId = res.data.serverId;
+            mock.createServer(mockPort, 'localhost', SERVER_PORT)
+                .then(sid => {
+                    serverId = sid;
                     assert(serverId);
                     assert(serverId > 10000000 && serverId < 99999999);
                     done()
@@ -96,14 +84,10 @@
                     done(err);
                 })
         });
+
         after(done => {
-            axios
-                .request({
-                    url: `http://localhost:${mockPort}/server/${serverId}`,
-                    method: 'delete'
-                })
-                .then(res => {
-                    assert(res.status == 200);
+            mock.deleteServer(mockPort, 'localhost', serverId)
+                .then(() => {
                     done();
                 })
                 .catch(err => {
@@ -118,7 +102,7 @@
             testHandler(routePath, 'GET', requestPath, {
                 status: testStatus
             }, res => {
-                assert(res.status == testStatus);
+                assert(res.statusCode == testStatus);
                 done();
             }, err => {
                 done(err);
@@ -133,7 +117,7 @@
             testHandler(routePath, 'GET', requestPath, {
                 status: testStatus
             }, res => {
-                assert(res.status == testStatus);
+                assert(res.statusCode == testStatus);
                 done();
             }, err => {
                 done(err);
@@ -148,7 +132,7 @@
             testHandler(routePath, 'GET', requestPath, {
                 status: testStatus
             }, res => {
-                assert(res.status == testStatus);
+                assert(res.statusCode == testStatus);
                 done();
             }, err => {
                 done(err);
@@ -163,7 +147,7 @@
             testHandler(routePath, 'GET', requestPath, {
                 status: testStatus
             }, res => {
-                assert(res.status == 404);
+                assert(res.statusCode == 404);
                 done();
             }, err => {
                 done(err);
@@ -197,7 +181,7 @@
             }, res => {
                 let end = Date.now();
                 assert((end - begin) >= 2000);
-                assert(res.status == testStatus);
+                assert(res.statusCode == testStatus);
                 done();
             }, err => {
                 done(err);
@@ -213,7 +197,7 @@
                 status: testStatus,
                 headers: RESPONSE_HEADERS
             }, res => {
-                assert(res.status == testStatus);
+                assert(res.statusCode == testStatus);
                 assert(res.headers);
                 for (let h in RESPONSE_HEADERS) {
                     assert(RESPONSE_HEADERS[h] == res.headers[h]);
@@ -233,7 +217,7 @@
                 status: testStatus,
                 cookies: RESPONSE_COOKIES
             }, res => {
-                assert(res.status == testStatus);
+                assert(res.statusCode == testStatus);
                 assert(res.headers);
                 let cookies = res.headers['set-cookie'];
                 assert(cookies);
@@ -253,8 +237,8 @@
                 status: testStatus,
                 body: RESPONSE_BODY_STRING
             }, res => {
-                assert(res.status == testStatus);
-                assert(res.data == RESPONSE_BODY_STRING);
+                assert(res.statusCode == testStatus);
+                assert(res.body == RESPONSE_BODY_STRING);
                 done();
             }, err => {
                 done(err);
@@ -270,8 +254,8 @@
                 status: testStatus,
                 body: RESPONSE_BODY_OBJECT
             }, res => {
-                assert(res.status == testStatus);
-                assert(JSON.stringify(res.data) == JSON.stringify(RESPONSE_BODY_OBJECT));
+                assert(res.statusCode == testStatus);
+                assert(JSON.stringify(res.body) == JSON.stringify(RESPONSE_BODY_OBJECT));
                 done();
             }, err => {
                 done(err);
@@ -287,11 +271,11 @@
                 status: testStatus,
                 body: RESPONSE_BODY_STRING_BIG
             }, res => {
-                assert(res.status == testStatus);
+                assert(res.statusCode == testStatus);
                 assert(res.headers['transfer-encoding'] == 'chunked');
                 // axios will decompress automatically if 'content-type' is 'gzip'
                 // res.data is always plain text
-                assert(res.data == RESPONSE_BODY_STRING_BIG);
+                assert(res.body == RESPONSE_BODY_STRING_BIG);
                 done();
             }, err => {
                 done(err);
